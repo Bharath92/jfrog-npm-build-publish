@@ -6,19 +6,50 @@ resources:
       path: bharath92/jfrog-npm-build-publish
       branches:
         include: main
+  
+  - name: build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: artifactory
+      buildName: build_and_publish
+      buildNumber: -1
 
 pipelines:
   - name: npm_build_publish
     steps:
-      - name: build_and_publish
-        type: Bash
+      - name: jenkins
+        type: Jenkins
         configuration:
+          jenkinsJobName: testPipeline
+          integrations:
+            - name: jenkins
+      
+      - name: build
+        type: NpmBuild
+        configuration:
+          resolverRepo: npm-remote
+          inputSteps:
+            - name: jenkins
           inputResources:
             - name: npm_git_repo
           integrations:
             - name: artifactory
         execution:
-          onExecute:
+          onStart:
             - pushd $res_npm_git_repo_resourcePath
-            - jfrog rt npm-config --repo-deploy npm-local --server-id-deploy artifactory
-            - jfrog rt npm-publish --build-name=$step_name --build-number=$run_number --detailed-summary
+            - npm version "0.0.$run_number"
+            - popd
+      
+      - name: publish
+        type: NpmPublish
+        configuration:
+          forceXrayScan: true
+          failOnScan: true
+          autoPublishBuildInfo: true
+          deployerRepo: npm-local
+          inputSteps:
+            - name: build
+          integrations:
+            - name: artifactory
+          outputResources:
+             - name: build_info

@@ -1,6 +1,6 @@
 {
   "name": "jfrog-npm-build-publish",
   "dependencies": {
-    "utia": "0.0.1-security"
+    "underscore": "1.13.4"
   }
 }
