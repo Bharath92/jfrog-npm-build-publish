@@ -53,3 +53,16 @@ pipelines:
             - name: artifactory
           outputResources:
              - name: build_info
+      
+      - name: demo
+        type: Bash
+        configuration:
+          inputResources:
+            - name: npm_git_repo
+          inputSteps:
+            - name: publish
+        execution:
+          onExecute:
+            - echo foo
+            - pushd $res_npm_git_repo_resourcePath
+            - node index.js
