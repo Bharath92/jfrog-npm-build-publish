@@ -10,18 +10,15 @@ resources:
 pipelines:
   - name: npm_build_publish
     steps:
-      - name: npm_build
-        type: NpmBuild
+      - name: build_and_publish
+        type: Bash
         configuration:
-          resolverRepo: npm-virtual
           inputResources:
             - name: npm_git_repo
           integrations:
             - name: artifactory
-      - name: npm_publish
-        type: NpmPublish
-        configuration:
-          inputSteps:
-            - name: npm_build
-          integrations:
-            - name: artifactory
+        execution:
+          onExecute:
+            - pushd $res_npm_git_repo_resourcePath
+            - jfrog rt npm-config --repo-deploy npm-local --server-id-deploy artifactory
+            - jfrog rt npm-publish --build-name=$step_name --build-number=$run_number --detailed-summary
