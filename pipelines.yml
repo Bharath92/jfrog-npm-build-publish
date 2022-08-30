@@ -1,0 +1,27 @@
+resources:
+  - name: npm_git_repo
+    type: GitRepo
+    configuration:
+      gitProvider: github
+      path: bharath92/jfrog-npm-build-publish
+      branches:
+        include: main
+
+pipelines:
+  - name: npm_build_publish
+    steps:
+      - name: npm_build
+        type: NpmBuild
+        configuration:
+          resolverRepo: npm-virtual
+          inputResources:
+            - name: npm_git_repo
+          integrations:
+            - name: artifactory
+      - name: npm_publish
+        type: NpmPublish
+        configuration:
+          inputSteps:
+            - name: npm_build
+          integrations:
+            - name: artifactory
