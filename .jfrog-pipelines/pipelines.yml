@@ -17,19 +17,19 @@ resources:
 pipelines:
   - name: npm_build_publish
     steps:
-      - name: jenkins
-        type: Jenkins
-        configuration:
-          jenkinsJobName: testPipeline
-          integrations:
-            - name: jenkins
+#       - name: jenkins
+#         type: Jenkins
+#         configuration:
+#           jenkinsJobName: testPipeline
+#           integrations:
+#             - name: jenkins
       
       - name: build
         type: NpmBuild
         configuration:
           resolverRepo: npm-remote
-          inputSteps:
-            - name: jenkins
+#           inputSteps:
+#             - name: jenkins
           inputResources:
             - name: npm_git_repo
           integrations:
