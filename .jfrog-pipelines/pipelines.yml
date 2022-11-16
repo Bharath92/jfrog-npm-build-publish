@@ -87,6 +87,9 @@ pipelines:
         
       - name: deploy
         type: Bash
+        configuration:
+          inputSteps:
+            - name: dockerbuild
         execution:
           onStart:
             - export dummy_deployment_id=$(date +%s)
@@ -118,4 +121,4 @@ pipelines:
             - name: itest
         execution:
           onStart:
-            - echo $deployment_id
+            - echo "deleting $deployment_id"
