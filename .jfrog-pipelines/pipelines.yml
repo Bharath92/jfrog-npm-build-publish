@@ -44,6 +44,9 @@ pipelines:
         type: NpmBuild
         configuration:
           resolverRepo: npm-remote
+          inputResources:
+            - name: npm_git_repo
+              trigger: false
           inputSteps:
             - name: test
 #             - name: jenkins
