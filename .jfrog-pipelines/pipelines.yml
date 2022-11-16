@@ -23,15 +23,30 @@ pipelines:
 #           jenkinsJobName: testPipeline
 #           integrations:
 #             - name: jenkins
-      
+      - name: test
+        type: Matrix
+        stepletMultipliers:
+          fastFail: true
+          environmentVariables:
+            - arch: x86_64
+            - arch: arm64
+        configuration:
+          inputResources:
+            - name: npm_git_repo
+          multiNode: true
+          runtime:
+            type: host
+        execution:
+          onExecute:
+            - echo $arch
+        
       - name: build
         type: NpmBuild
         configuration:
           resolverRepo: npm-remote
-#           inputSteps:
+          inputSteps:
+            - name: test
 #             - name: jenkins
-          inputResources:
-            - name: npm_git_repo
           integrations:
             - name: artifactory
         execution:
