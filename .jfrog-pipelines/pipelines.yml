@@ -73,17 +73,25 @@ pipelines:
             - name: artifactory
           outputResources:
              - name: build_info
-      
-      - name: deploy
+ 
+ - name: build_docker_image
+    steps:
+      - name: dockerbuild
         type: Bash
         configuration:
-          inputSteps:
-            - name: publish
+          inputResources:
+            - name: build_info
         execution:
           onStart:
-            - export dummy_instance_id=$(date +%s)
-            - echo "$dummy_instance_id"
-            - add_run_variables "instance_id=$dummy_instance_id"
+            - echo docker
+        
+      - name: deploy
+        type: Bash
+        execution:
+          onStart:
+            - export dummy_deployment_id=$(date +%s)
+            - echo "$dummy_deployment_id"
+            - add_run_variables "deployment_id=$dummy_deployment_id"
       
       - name: itest
         type: Bash
@@ -94,6 +102,15 @@ pipelines:
           onStart:
             - echo itest
       
+      - name: dockerpush
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: itest
+        execution:
+          onStart:
+            - echo pushed
+      
       - name: cleanup
         type: Bash
         configuration:
@@ -101,4 +118,4 @@ pipelines:
             - name: itest
         execution:
           onStart:
-            - echo $instance_id
+            - echo $deployment_id
