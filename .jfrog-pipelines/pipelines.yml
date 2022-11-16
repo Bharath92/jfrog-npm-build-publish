@@ -74,15 +74,31 @@ pipelines:
           outputResources:
              - name: build_info
       
-      - name: demo
+      - name: deploy
         type: Bash
         configuration:
-          inputResources:
-            - name: npm_git_repo
           inputSteps:
             - name: publish
         execution:
-          onExecute:
-            - echo foo
-            - pushd $res_npm_git_repo_resourcePath
-            - node index.js
+          onStart:
+            - export dummy_instance_id=$(date +%s)
+            - echo "$dummy_instance_id"
+            - add_run_variables "instance_id=$dummy_instance_id"
+      
+      - name: itest
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: deploy
+        execution:
+          onStart:
+            - echo itest
+      
+      - name: cleanup
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: itest
+        execution:
+          onStart:
+            - echo $instance_id
