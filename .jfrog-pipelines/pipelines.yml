@@ -16,8 +16,8 @@ resources:
 
 pipelines:
   - name: npm_build_publish
-    configuration:
-      chronological: true
+#     configuration:
+#       chronological: true
     steps:
 #       - name: jenkins
 #         type: Jenkins
