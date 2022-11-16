@@ -2,7 +2,7 @@ resources:
   - name: npm_git_repo
     type: GitRepo
     configuration:
-      gitProvider: github
+      gitProvider: bharath_github
       path: bharath92/jfrog-npm-build-publish
       branches:
         include: main
